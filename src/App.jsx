@@ -10,3 +10,6 @@ function App() {
 }
 
 export default App
+import PlasticProductAnalysis from './components/PlasticProductAnalysis';
+
+

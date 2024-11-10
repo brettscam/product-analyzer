@@ -1,2 +1,2 @@
-# product-analyzer
+# product-scanner
 AI-powered product analysis tool

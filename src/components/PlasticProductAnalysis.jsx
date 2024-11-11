@@ -1,7 +1,5 @@
 import React, { useState } from 'react';
-import { Upload, Camera, AlertCircle, CheckCircle, Info, X, Recycle, Droplet } from 'lucide-react';
-import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert';
-import { Button } from '@/components/ui/button';
+import { Camera, AlertCircle, CheckCircle, Info, X, Recycle, Droplet } from 'lucide-react';
 
 const PlasticProductAnalysis = () => {
   const [images, setImages] = useState([]);
@@ -39,7 +37,7 @@ const PlasticProductAnalysis = () => {
           degradationTime: "450 years to decompose in nature",
           oceanImpact: "Can break down into microplastics in marine environments"
         },
-        overallSustainabilityScore: Math.floor(Math.random() * 40) + 60, // Random score between 60-100
+        overallSustainabilityScore: Math.floor(Math.random() * 40) + 60,
         regionalAnalysis: {
           US: "Recyclable in most curbside programs",
           EU: "Subject to single-use plastic regulations in some countries",
@@ -102,9 +100,12 @@ const PlasticProductAnalysis = () => {
           )}
 
           {images.length > 0 && !analysis && (
-            <Button onClick={simulateAnalysis} className="w-full mb-4">
+            <button 
+              onClick={simulateAnalysis} 
+              className="w-full mb-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+            >
               Analyze Plastic Product
-            </Button>
+            </button>
           )}
 
           {analysis && (
@@ -138,17 +139,17 @@ const PlasticProductAnalysis = () => {
                 </ul>
               </div>
               
-              <Alert className={`mb-4 ${
+              <div className={`mb-4 p-4 rounded-lg ${
                 analysis.overallSustainabilityScore > 80 ? 'bg-green-100' :
                 analysis.overallSustainabilityScore > 60 ? 'bg-yellow-100' : 'bg-red-100'
               }`}>
-                <AlertTitle>Overall Sustainability Score: {analysis.overallSustainabilityScore}%</AlertTitle>
-                <AlertDescription>
+                <h5 className="font-medium">Overall Sustainability Score: {analysis.overallSustainabilityScore}%</h5>
+                <p className="text-sm mt-1">
                   {analysis.overallSustainabilityScore > 80 ? 'This plastic product has a relatively low environmental impact.' :
                    analysis.overallSustainabilityScore > 60 ? 'This plastic product has moderate environmental concerns.' :
                    'This plastic product has significant environmental impact and should be used with caution.'}
-                </AlertDescription>
-              </Alert>
+                </p>
+              </div>
 
               <div className="mb-4">
                 <h4 className="font-medium mb-2">Environmental Impact:</h4>
@@ -176,9 +177,12 @@ const PlasticProductAnalysis = () => {
                 ))}
               </div>
 
-              <Button onClick={resetForNextItem} className="mt-4">
+              <button 
+                onClick={resetForNextItem} 
+                className="mt-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+              >
                 Analyze Next Item
-              </Button>
+              </button>
             </div>
           )}
         </div>

@@ -1,63 +1,55 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Product Analyzer</title>
-    <!-- Include React and ReactDOM from CDN -->
-    <script crossorigin src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
-    <script crossorigin src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
-    <!-- Include Tailwind CSS -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.js"></script>
-</head>
-<body>
-    <!-- Container for our web component -->
-    <div id="product-analyzer-root"></div>
+import React, { useState } from 'react';
+import { Camera, AlertCircle, CheckCircle, Baby } from 'lucide-react';
 
-    <script>
-        // Create a custom element wrapper
-        class ProductAnalyzer extends HTMLElement {
-            constructor() {
-                super();
-                this.attachShadow({ mode: 'open' });
-            }
+const ProductAnalyzer = () => {
+  const [image, setImage] = useState(null);
+  const [analysis, setAnalysis] = useState(null);
 
-            connectedCallback() {
-                // Create container
-                const container = document.createElement('div');
-                this.shadowRoot.appendChild(container);
+  const handleImageUpload = async (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setImage(reader.result);
+        simulateAnalysis();
+      };
+      reader.readAsDataURL(file);
+    }
+  };
 
-                // Inject styles
-                const style = document.createElement('style');
-                style.textContent = `
-                    /* Add your component styles here */
-                    :host {
-                        display: block;
-                        width: 100%;
-                        max-width: 1200px;
-                        margin: 0 auto;
-                    }
-                `;
-                this.shadowRoot.appendChild(style);
+  const simulateAnalysis = () => {
+    setTimeout(() => {
+      setAnalysis({
+        productType: "Food",
+        category: "Snacks",
+        productName: "Example Product",
+        healthScore: 75,
+        ingredients: [
+          {
+            name: "Natural Ingredients",
+            status: "safe",
+            pregnancySafe: true,
+            description: "Basic food components"
+          },
+          {
+            name: "Artificial Flavors",
+            status: "caution",
+            pregnancySafe: false,
+            description: "Synthetic additives"
+          }
+        ],
+        pregnancyWarnings: [
+          "Contains artificial additives",
+          "Moderate sodium content"
+        ]
+      });
+    }, 1500);
+  };
 
-                // Mount React component
-                ReactDOM.render(
-                    React.createElement(ProductAnalyzerComponent),
-                    container
-                );
-            }
-        }
-
-        // Register the custom element
-        customElements.define('product-analyzer', ProductAnalyzer);
-    </script>
-
-    <!-- Example usage -->
-    <script>
-        // Example of how to embed the component
-        document.write(`
-            <product-analyzer></product-analyzer>
-        `);
-    </script>
-</body>
-</html>
+  return (
+    <div className="max-w-2xl mx-auto p-6 bg-white rounded-lg shadow-xl">
+      <div className="mb-6">
+        <label className="block text-lg font-medium text-gray-700 mb-2">
+          Analyze Product Safety
+        </label>
+        <div className="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-lg">

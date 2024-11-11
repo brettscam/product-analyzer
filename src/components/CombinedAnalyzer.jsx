@@ -9,6 +9,16 @@ const CombinedAnalyzer = () => {
   const [analysis, setAnalysis] = useState(null);
   const [history, setHistory] = useState([]);
 
+  const handleImageUpload = (event) => {
+    const files = Array.from(event.target.files);
+    const newImages = files.map(file => URL.createObjectURL(file));
+    setImages(prevImages => [...prevImages, ...newImages]);
+  };
+
+  const removeImage = (index) => {
+    setImages(prevImages => prevImages.filter((_, i) => i !== index));
+  };
+
   const getScoreMethodology = (type) => {
     const methodologies = {
       product: "Score based on EWG's Skin Deep® database methodology, analyzing ingredient safety data from over 60 toxicity and regulatory databases.",
@@ -97,7 +107,13 @@ const CombinedAnalyzer = () => {
                   <span className="mt-2 block text-sm text-gray-600">Upload product images</span>
                 </div>
               </div>
-              <input type="file" className="hidden" onChange={/* handle upload */} accept="image/*" multiple />
+              <input 
+                type="file" 
+                className="hidden" 
+                onChange={handleImageUpload} 
+                accept="image/*" 
+                multiple 
+              />
             </label>
 
             {images.length > 0 && (
@@ -105,7 +121,12 @@ const CombinedAnalyzer = () => {
                 {images.map((image, index) => (
                   <div key={index} className="relative">
                     <img src={image} alt="" className="w-full h-24 object-cover rounded" />
-                    <button className="absolute top-1 right-1 bg-red-500 text-white rounded-full p-1">×</button>
+                    <button 
+                      onClick={() => removeImage(index)}
+                      className="absolute top-1 right-1 bg-red-500 text-white rounded-full p-1"
+                    >
+                      ×
+                    </button>
                   </div>
                 ))}
               </div>
@@ -114,6 +135,7 @@ const CombinedAnalyzer = () => {
             <button
               onClick={simulateAnalysis}
               className="w-full mt-4 py-2 px-4 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+              disabled={!productTitle.trim() || images.length === 0}
             >
               Analyze Product
             </button>
@@ -132,11 +154,8 @@ const CombinedAnalyzer = () => {
                     {analysis.safetyScore}%
                   </div>
                   <div className="ml-2 text-sm text-gray-600">Safety Score</div>
-                  <button className="ml-2 text-gray-400 hover:text-gray-600">
-                    <Info size={16} />
-                  </button>
+                  <div className="ml-2 text-sm text-gray-500">{analysis.methodology}</div>
                 </div>
-                <p className="text-sm text-gray-600 mt-2">{analysis.methodology}</p>
               </div>
 
               {/* Regional Regulations */}

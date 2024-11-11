@@ -1,7 +1,5 @@
 import React, { useState } from 'react';
 import { Camera, AlertCircle, CheckCircle, Info, X, ShieldAlert, Globe2 } from 'lucide-react';
-import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert';
-import { Button } from '@/components/ui/button';
 
 const ProductSafetyAnalysis = () => {
   const [images, setImages] = useState([]);
@@ -67,24 +65,6 @@ const ProductSafetyAnalysis = () => {
             "Zinc oxide (physical UV blocker)",
             "Natural preservatives"
           ]
-        },
-        researchFindings: [
-          {
-            source: "Environmental Working Group",
-            finding: "Ingredient detected in human blood samples",
-            year: 2023
-          },
-          {
-            source: "European Chemicals Agency",
-            finding: "Potential endocrine disrupting properties",
-            year: 2022
-          }
-        ],
-        internationalRestrictions: {
-          EU: ["Restricted under REACH regulation", "Limited in children's products"],
-          Canada: ["Restricted in certain product categories"],
-          Japan: ["Subject to concentration limits"],
-          Australia: ["Required warning labels"]
         }
       };
       setAnalysis(newAnalysis);
@@ -103,9 +83,10 @@ const ProductSafetyAnalysis = () => {
 
   return (
     <div className="max-w-4xl mx-auto mt-10 p-6 bg-white rounded-lg shadow-xl">
-      <h2 className="text-2xl font-bold mb-4">Product Chemical Safety Analysis</h2>
+      <h2 className="text-2xl font-bold mb-4">Chemical Safety Analysis</h2>
       
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {/* Analysis Section */}
         <div>
           {/* Upload Section */}
           <div className="mb-4">
@@ -137,11 +118,14 @@ const ProductSafetyAnalysis = () => {
             </div>
           )}
 
-          {/* Analysis Button */}
+          {/* Analyze Button */}
           {images.length > 0 && !analysis && (
-            <Button onClick={simulateAnalysis} className="w-full mb-4">
+            <button 
+              onClick={simulateAnalysis}
+              className="w-full py-2 px-4 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 mb-4"
+            >
               Analyze Product Safety
-            </Button>
+            </button>
           )}
 
           {/* Analysis Results */}
@@ -150,18 +134,18 @@ const ProductSafetyAnalysis = () => {
               <h3 className="text-xl font-semibold mb-2">{analysis.productName}</h3>
               <p className="text-md font-medium mb-4">Type: {analysis.productType}</p>
               
-              {/* Overall Safety Score */}
-              <Alert className={`mb-4 ${
+              {/* Safety Score */}
+              <div className={`p-4 rounded-lg mb-4 ${
                 analysis.overallSafetyScore > 80 ? 'bg-green-100' :
                 analysis.overallSafetyScore > 60 ? 'bg-yellow-100' : 'bg-red-100'
               }`}>
-                <AlertTitle>Safety Score: {analysis.overallSafetyScore}%</AlertTitle>
-                <AlertDescription>
+                <h4 className="font-semibold">Safety Score: {analysis.overallSafetyScore}%</h4>
+                <p className="text-sm mt-1">
                   {analysis.overallSafetyScore > 80 ? 'This product contains relatively safe ingredients.' :
                    analysis.overallSafetyScore > 60 ? 'This product contains some ingredients of concern.' :
                    'This product contains multiple ingredients of high concern.'}
-                </AlertDescription>
-              </Alert>
+                </p>
+              </div>
 
               {/* Ingredients Analysis */}
               <div className="space-y-4 mb-6">
@@ -228,20 +212,6 @@ const ProductSafetyAnalysis = () => {
                     </ul>
                   </div>
                 </div>
-              </div>
-
-              {/* Research Findings */}
-              <div className="bg-blue-50 p-4 rounded-lg mb-6">
-                <h4 className="font-medium mb-2">Recent Research:</h4>
-                <ul className="space-y-2">
-                  {analysis.researchFindings.map((research, index) => (
-                    <li key={index} className="text-sm">
-                      <span className="font-medium">{research.source} ({research.year}):</span>
-                      <br />
-                      {research.finding}
-                    </li>
-                  ))}
-                </ul>
               </div>
             </div>
           )}

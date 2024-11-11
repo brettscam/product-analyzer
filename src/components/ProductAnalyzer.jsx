@@ -1,6 +1,11 @@
-import React, { useState } from 'react';
-import { Camera, AlertCircle, CheckCircle, Baby } from 'lucide-react';
+import React from 'react'
 
 const ProductAnalyzer = () => {
-  const [image, setImage] = useState(null);
-  const [analysis, setAnalysis] = useState(null);
+  return (
+    <div>
+      <h1>Product Analyzer</h1>
+    </div>
+  )
+}
+
+export default ProductAnalyzer

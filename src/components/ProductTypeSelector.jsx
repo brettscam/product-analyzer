@@ -17,7 +17,7 @@ const ProductTypeSelector = ({ selectedType, onTypeSelect }) => {
             <button
               key={type.id}
               onClick={() => onTypeSelect(type.id)}
-              className={`flex items-center px-4 py-2 rounded-md ${
+              className={`flex items-center px-6 py-3 rounded-md ${
                 selectedType === type.id
                   ? 'bg-blue-100 text-blue-700'
                   : 'hover:bg-gray-50'

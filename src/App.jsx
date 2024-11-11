@@ -1,5 +1,5 @@
 import React from 'react'
-import PlasticProductAnalysis from './components/PlasticProductAnalysis'  // Remove curly braces
+import PlasticProductAnalysis from './components/PlasticProductAnalysis'
 
 function App() {
   return (

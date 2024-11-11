@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Camera, AlertCircle, CheckCircle, Baby, Utensils, BeakerIcon } from 'lucide-react';
+import { Camera, AlertCircle, CheckCircle, Baby, Utensils, Beaker } from 'lucide-react';
 
 const ProductAnalyzer = ({ mode = 'ingredients' }) => {
   const [image, setImage] = useState(null);

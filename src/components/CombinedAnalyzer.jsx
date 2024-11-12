@@ -3,7 +3,54 @@ import { Camera, Info, Globe2, AlertCircle, CheckCircle } from 'lucide-react';
 import ProductTypeSelector from './ProductTypeSelector';
 
 const CombinedAnalyzer = () => {
-  // ... [previous state code remains the same]
+  const [selectedType, setSelectedType] = useState('chemical');
+  const [productTitle, setProductTitle] = useState('');
+  const [images, setImages] = useState([]);
+  const [analysis, setAnalysis] = useState(null);
+  const [history, setHistory] = useState([]);
+
+  const handleImageUpload = (event) => {
+    const files = Array.from(event.target.files);
+    const newImages = files.map(file => URL.createObjectURL(file));
+    setImages(prevImages => [...prevImages, ...newImages]);
+  };
+
+  const removeImage = (index) => {
+    setImages(prevImages => prevImages.filter((_, i) => i !== index));
+  };
+
+  const getScoreMethodology = (type) => {
+    const methodologies = {
+      chemical: "Score based on EWG's Skin Deep® database methodology, analyzing ingredient safety data from over 60 toxicity and regulatory databases.",
+      food: "Score derived from FDA food safety guidelines, allergen presence, and processing safety standards.",
+      pregnancy: "Score based on FDA pregnancy categories, clinical studies, and recommendations from major obstetric organizations."
+    };
+    return methodologies[type];
+  };
+
+  const getSources = (type) => {
+    const sources = {
+      chemical: [
+        "Environmental Working Group (EWG) Skin Deep® Database",
+        "EU Cosmetics Ingredient Database",
+        "FDA Cosmetic Ingredient Database",
+        "Health Canada Cosmetic Ingredient Hotlist"
+      ],
+      food: [
+        "FDA Food Safety Database",
+        "USDA Food Composition Database",
+        "European Food Safety Authority Database",
+        "Health Canada Food Safety Standards"
+      ],
+      pregnancy: [
+        "FDA Pregnancy Categories",
+        "MotherToBaby Database",
+        "European Medicines Agency Pregnancy Data",
+        "Australian Therapeutic Goods Administration"
+      ]
+    };
+    return sources[type];
+  };
 
   const simulateAnalysis = () => {
     if (!productTitle.trim()) {
@@ -99,8 +146,57 @@ const CombinedAnalyzer = () => {
       
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div className="space-y-6">
-          {/* Input Section - same as before */}
-          
+          {/* Input Section */}
+          <div className="bg-white rounded-lg shadow p-6">
+            <input
+              type="text"
+              value={productTitle}
+              onChange={(e) => setProductTitle(e.target.value)}
+              className="w-full p-3 border border-gray-300 rounded-lg mb-4"
+              placeholder="Enter product name"
+            />
+
+            <label className="block mb-4">
+              <div className="flex items-center justify-center h-32 border-2 border-dashed border-gray-300 rounded-lg cursor-pointer hover:bg-gray-50">
+                <div className="text-center">
+                  <Camera className="mx-auto h-12 w-12 text-gray-400" />
+                  <span className="mt-2 block text-sm text-gray-600">Upload product images</span>
+                </div>
+              </div>
+              <input 
+                type="file" 
+                className="hidden" 
+                onChange={handleImageUpload} 
+                accept="image/*" 
+                multiple 
+              />
+            </label>
+
+            {images.length > 0 && (
+              <div className="grid grid-cols-3 gap-2">
+                {images.map((image, index) => (
+                  <div key={index} className="relative">
+                    <img src={image} alt="" className="w-full h-24 object-cover rounded" />
+                    <button 
+                      onClick={() => removeImage(index)}
+                      className="absolute top-1 right-1 bg-red-500 text-white rounded-full p-1"
+                    >
+                      ×
+                    </button>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            <button
+              onClick={simulateAnalysis}
+              className="w-full mt-4 py-2 px-4 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+              disabled={!productTitle.trim() || images.length === 0}
+            >
+              Analyze Product
+            </button>
+          </div>
+
           {/* Analysis Results */}
           {analysis && (
             <div className="bg-white rounded-lg shadow p-6">
@@ -188,12 +284,48 @@ const CombinedAnalyzer = () => {
                 </ul>
               </div>
 
-              {/* Sources - same as before */}
+              {/* Sources */}
+              <div className="mt-6 pt-4 border-t">
+                <h4 className="font-medium mb-2">Data Sources:</h4>
+                <ul className="text-sm text-gray-600 space-y-1">
+                  {analysis.sources.map((source, index) => (
+                    <li key={index}>• {source}</li>
+                  ))}
+                </ul>
+              </div>
             </div>
           )}
         </div>
 
-        {/* History Section - same as before */}
+        {/* History Section */}
+        <div className="bg-white rounded-lg shadow p-6">
+          <h3 className="text-xl font-semibold mb-4">Analysis History</h3>
+          <div className="space-y-4">
+            {history.map((item, index) => (
+              <div key={index} className="border rounded-lg p-4">
+                <div className="flex justify-between items-start">
+                  <div>
+                    <h4 className="font-medium">{item.productName}</h4>
+                    <p className="text-sm text-gray-600">
+                      {new Date(item.timestamp).toLocaleDateString()}
+                    </p>
+                  </div>
+                  <div className={`text-lg font-bold ${
+                    item.safetyScore > 80 ? 'text-green-600' :
+                    item.safetyScore > 60 ? 'text-yellow-600' : 'text-red-600'
+                  }`}>
+                    {item.safetyScore}%
+                  </div>
+                </div>
+                {item.ingredients.length > 0 && (
+                  <div className="mt-2 text-sm text-gray-600">
+                    <p>Key Concerns: {item.ingredients[0].healthConcerns.join(", ")}</p>
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+        </div>
       </div>
     </div>
   );

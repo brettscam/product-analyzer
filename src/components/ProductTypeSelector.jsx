@@ -1,9 +1,9 @@
 import React from 'react';
 import { Beaker, Apple, Baby } from 'lucide-react';
 
-const ProductTypeSelector = ({ selectedType, onTypeSelect }) => {
+const ProductTypeSelector = ({ selectedType = 'chemical', onTypeSelect }) => {
   const types = [
-    { id: 'product', name: 'Chemical Safety', icon: Beaker },
+    { id: 'chemical', name: 'Chemical Safety', icon: Beaker },
     { id: 'food', name: 'Food Safety', icon: Apple },
     { id: 'pregnancy', name: 'Pregnancy Safe', icon: Baby }
   ];

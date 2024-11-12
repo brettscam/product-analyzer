@@ -1,11 +1,9 @@
 import React from 'react';
 import CombinedAnalyzer from './components/CombinedAnalyzer';
-import ProductTypeSelector from './components/ProductTypeSelector';
 
 function App() {
   return (
-    <div className="App">
-      <ProductTypeSelector />
+    <div className="min-h-screen bg-gray-50">
       <CombinedAnalyzer />
     </div>
   );

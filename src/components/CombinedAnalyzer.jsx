@@ -21,7 +21,7 @@ const CombinedAnalyzer = () => {
 
   const getScoreMethodology = (type) => {
     const methodologies = {
-      chemical: "Score based on EWG's Skin Deep® database methodology, analyzing ingredient safety data from over 60 toxicity and regulatory databases.",
+      chemical: "Score based on ingredient safety data from EWG's Skin Deep® database and global regulatory databases. Analyzes presence of harmful chemicals, carcinogens, allergens, and endocrine disruptors.",
       food: "Score derived from FDA food safety guidelines, allergen presence, and processing safety standards.",
       pregnancy: "Score based on FDA pregnancy categories, clinical studies, and recommendations from major obstetric organizations."
     };
@@ -52,22 +52,65 @@ const CombinedAnalyzer = () => {
     return sources[type];
   };
 
-  const simulateAnalysis = () => {
-    if (!productTitle.trim()) {
-      alert('Please enter a product title');
-      return;
-    }
-
-    const newAnalysis = {
-      productName: productTitle,
-      timestamp: new Date().toISOString(),
-      type: selectedType,
-      safetyScore: Math.floor(Math.random() * 40) + 60,
-      ingredients: [
+  const getIngredientsByType = (type) => {
+    const ingredients = {
+      chemical: [
+        {
+          name: "Oxybenzone",
+          status: "high_risk",
+          description: "UV filter linked to hormone disruption",
+          tags: ["UV Filter", "Endocrine Disruptor"],
+          healthConcerns: [
+            "Hormone system disruption",
+            "Allergic skin reactions",
+            "Cellular damage from oxidation",
+            "Environmental toxicity (coral reef damage)"
+          ],
+          regulations: {
+            EU: "Restricted (max 6%)",
+            US: "FDA approved up to 6%",
+            Canada: "Restricted in certain products",
+            Hawaii: "Banned (reef damage)"
+          }
+        },
+        {
+          name: "Methylparaben",
+          status: "moderate_risk",
+          description: "Preservative with potential endocrine effects",
+          tags: ["Preservative", "Paraben"],
+          healthConcerns: [
+            "Potential endocrine disruption",
+            "Weak estrogenic activity",
+            "Linked to breast cancer concerns"
+          ],
+          regulations: {
+            EU: "Restricted in certain products",
+            US: "Generally recognized as safe",
+            Canada: "Allowed with restrictions"
+          }
+        },
+        {
+          name: "Avobenzone",
+          status: "moderate_risk",
+          description: "Chemical UV filter, unstable in sunlight",
+          tags: ["UV Filter", "Synthetic"],
+          healthConcerns: [
+            "High rate of skin allergies",
+            "Photostability concerns",
+            "Enhanced skin absorption of other chemicals"
+          ],
+          regulations: {
+            EU: "Approved with restrictions",
+            US: "FDA approved up to 3%",
+            Canada: "Approved with limits"
+          }
+        }
+      ],
+      food: [
         {
           name: "High Fructose Corn Syrup",
           status: "high_risk",
-          description: "Artificial sweetener linked to obesity and diabetes",
+          description: "Artificial sweetener linked to health issues",
           tags: ["Added Sugar", "Processed"],
           healthConcerns: [
             "Blood sugar impact",
@@ -79,40 +122,55 @@ const CombinedAnalyzer = () => {
             US: "No restrictions",
             Canada: "Required disclosure"
           }
-        },
-        {
-          name: "Yellow 5",
-          status: "moderate_risk",
-          description: "Artificial color linked to hyperactivity in children",
-          tags: ["Artificial Color", "Allergen Risk"],
-          healthConcerns: [
-            "Hyperactivity in children",
-            "Allergic reactions",
-            "Behavioral effects"
-          ],
-          regulations: {
-            EU: "Warning required",
-            US: "Approved",
-            Canada: "Restricted in children's products"
-          }
-        },
-        {
-          name: "Whole Grain Wheat",
-          status: "safe",
-          description: "Natural whole grain ingredient",
-          tags: ["Natural", "Whole Grain"],
-          healthConcerns: [],
-          regulations: {
-            EU: "Approved",
-            US: "Approved",
-            Canada: "Approved"
-          }
         }
       ],
-      recommendations: [
-        "Consider alternatives with natural colorings",
-        "Look for products without artificial sweeteners",
-        "Check for whole grain alternatives"
+      pregnancy: [
+        {
+          name: "Retinol (Vitamin A)",
+          status: "high_risk",
+          description: "Can cause birth defects if used during pregnancy",
+          tags: ["Vitamin", "Anti-aging"],
+          healthConcerns: [
+            "Birth defects",
+            "Developmental issues",
+            "Fetal malformation"
+          ],
+          regulations: {
+            EU: "Warning required for pregnant women",
+            US: "Warning required",
+            Canada: "Warning required"
+          }
+        }
+      ]
+    };
+    return ingredients[type] || [];
+  };
+
+  const simulateAnalysis = () => {
+    if (!productTitle.trim()) {
+      alert('Please enter a product title');
+      return;
+    }
+
+    const newAnalysis = {
+      productName: productTitle,
+      timestamp: new Date().toISOString(),
+      type: selectedType,
+      safetyScore: Math.floor(Math.random() * 40) + 60,
+      ingredients: getIngredientsByType(selectedType),
+      recommendations: selectedType === 'chemical' ? [
+        "Consider mineral-based alternatives with zinc oxide or titanium dioxide",
+        "Look for paraben-free and fragrance-free formulations",
+        "Check for products with natural preservatives",
+        "Avoid products with oxybenzone, especially in marine environments"
+      ] : selectedType === 'food' ? [
+        "Choose products without artificial sweeteners",
+        "Look for natural alternatives",
+        "Check for whole food ingredients"
+      ] : [
+        "Avoid retinoids during pregnancy",
+        "Choose fragrance-free products",
+        "Look for pregnancy-safe alternatives"
       ],
       methodology: getScoreMethodology(selectedType),
       sources: getSources(selectedType)
@@ -201,16 +259,27 @@ const CombinedAnalyzer = () => {
           {analysis && (
             <div className="bg-white rounded-lg shadow p-6">
               <div className="mb-4 pb-4 border-b">
-                <h3 className="text-xl font-semibold">{analysis.productName}</h3>
-                <div className="flex items-center mt-2">
-                  <div className={`text-2xl font-bold ${
-                    analysis.safetyScore > 80 ? 'text-green-600' :
-                    analysis.safetyScore > 60 ? 'text-yellow-600' : 'text-red-600'
-                  }`}>
-                    {analysis.safetyScore}%
+                <div className="flex items-start">
+                  {images[0] && (
+                    <img 
+                      src={images[0]} 
+                      alt={analysis.productName} 
+                      className="w-24 h-24 object-cover rounded-lg mr-4"
+                    />
+                  )}
+                  <div>
+                    <h3 className="text-xl font-semibold">{analysis.productName}</h3>
+                    <div className="flex items-center mt-2">
+                      <div className={`text-2xl font-bold ${
+                        analysis.safetyScore > 80 ? 'text-green-600' :
+                        analysis.safetyScore > 60 ? 'text-yellow-600' : 'text-red-600'
+                      }`}>
+                        {analysis.safetyScore}%
+                      </div>
+                      <div className="ml-2 text-sm text-gray-600">Safety Score</div>
+                    </div>
+                    <div className="mt-2 text-sm text-gray-500">{analysis.methodology}</div>
                   </div>
-                  <div className="ml-2 text-sm text-gray-600">Safety Score</div>
-                  <div className="ml-2 text-sm text-gray-500">{analysis.methodology}</div>
                 </div>
               </div>
 
@@ -326,9 +395,3 @@ const CombinedAnalyzer = () => {
             ))}
           </div>
         </div>
-      </div>
-    </div>
-  );
-};
-
-export default CombinedAnalyzer;

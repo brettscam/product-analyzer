@@ -145,7 +145,6 @@ const CombinedAnalyzer = () => {
     };
     return ingredients[type] || [];
   };
-
   const simulateAnalysis = () => {
     if (!productTitle.trim()) {
       alert('Please enter a product title');
@@ -395,3 +394,9 @@ const CombinedAnalyzer = () => {
             ))}
           </div>
         </div>
+      </div>
+    </div>
+  );
+};
+
+export default CombinedAnalyzer;
